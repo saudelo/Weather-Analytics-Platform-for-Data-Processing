@@ -2,7 +2,7 @@ CREATE SCHEMA weather_analytics;
 
 CREATE TABLE weather_analytics.city (
     city_id SERIAL PRIMARY KEY,
-    city VARCHAR(50) NOT NULL,
+    city VARCHAR(50) UNIQUE NOT NULL,
     us_state VARCHAR(50) NULL
     --will clean state using pandas and fill in values if necessary
 );
