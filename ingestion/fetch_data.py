@@ -12,11 +12,11 @@ import sys
 TIMEOUT=5   #timeout in seconds for the requests
 
 #will move these urls to a config file later
-PHOENIX_URL = "https://archive-api.open-meteo.com/v1/archive?latitude=33.44838&longitude=-112.07404&start_date=2024-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
-SEATTLE_URL = "https://archive-api.open-meteo.com/v1/archive?latitude=47.60621&longitude=-122.33207&start_date=2024-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
-CHICAGO_URL = "https://archive-api.open-meteo.com/v1/archive?latitude=41.85003&longitude=-87.65005&start_date=2024-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
-JUNEAU_URL =  "https://archive-api.open-meteo.com/v1/archive?latitude=58.30194&longitude=-134.41972&start_date=2024-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
-MIAMI_URL = "https://archive-api.open-meteo.com/v1/archive?latitude=25.77427&longitude=-80.19366&start_date=2024-01-01&end_date=2024-12-31&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
+PHOENIX_URL = "https://archive-api.open-meteo.com/v1/archive?latitude=33.44838&longitude=-112.07404&start_date=2024-01-01&end_date=2024-01-03&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
+SEATTLE_URL = "https://archive-api.open-meteo.com/v1/archive?latitude=47.60621&longitude=-122.33207&start_date=2024-01-01&end_date=2024-01-03&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
+CHICAGO_URL = "https://archive-api.open-meteo.com/v1/archive?latitude=41.85003&longitude=-87.65005&start_date=2024-01-01&end_date=2024-01-03&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
+JUNEAU_URL =  "https://archive-api.open-meteo.com/v1/archive?latitude=58.30194&longitude=-134.41972&start_date=2024-01-01&end_date=2024-01-03&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
+MIAMI_URL = "https://archive-api.open-meteo.com/v1/archive?latitude=25.77427&longitude=-80.19366&start_date=2024-01-01&end_date=2024-01-03&daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch"
 
 _count = 0
 #this is my main function
@@ -46,11 +46,17 @@ def get_data():
 
             # Write the response JSON data to a file
             with open(file_path,"w") as f:
+                f.write("[")  # Start of the JSON array
                 json.dump(response_phx.json(), f, indent=4)
+                f.write(",")  # Add a comma between JSON objects
                 json.dump(response_seattle.json(), f, indent=4)
+                f.write(",")  # Add a comma between JSON objects
                 json.dump(response_chicago.json(), f, indent=4)
+                f.write(",")  # Add a comma between JSON objects
                 json.dump(response_juneau.json(), f, indent=4)
+                f.write(",")  # Add a comma between JSON objects
                 json.dump(response_miami.json(), f, indent=4)
+                f.write("]")  # End of the JSON array
 
     except FileNotFoundError as e:
         print(f"File not found in {file_path}: {e}")
