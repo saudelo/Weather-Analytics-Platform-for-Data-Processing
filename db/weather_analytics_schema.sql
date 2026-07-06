@@ -16,8 +16,8 @@ CREATE TABLE weather_analytics.weather_data (
     temp_max_f FLOAT NOT NULL,
     temp_min_f FLOAT NOT NULL,
     temp_mean_f FLOAT NULL,
-    precip_sum_in FLOAT NOT NULL,
-    precip_hours FLOAT NULL,
+    precipitation_sum_in FLOAT NOT NULL,
+    precipitation_hours FLOAT NULL,
     wind_speed_max_mph FLOAT NOT NULL
 --made some fields nullable since some were optional for this assignment
 --i will clean any missing values using pandas

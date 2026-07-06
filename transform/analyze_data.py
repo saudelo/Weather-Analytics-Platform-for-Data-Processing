@@ -28,7 +28,6 @@ print("Missing values per column:")
 print(df.isnull().sum())
 
 
-
 #Checking for duplicates
 def make_hashable(val):
     try:
@@ -46,10 +45,6 @@ def make_hashable(val):
 df_hashable = df.copy()
 df_hashable = df_hashable.map(make_hashable)
 print(f"\nDuplicate rows: {df_hashable.duplicated().sum()}")
-
-
-# Unpacking multiple list columns into individual columns
-#df[['col1', 'col2']] = df.apply(lambda row: pd.Series([row['list_col1'], row['list_col2']]), axis=1)
 
 #no need to drop duplicates or missing values since there are none.
 
@@ -87,17 +82,61 @@ city_df.loc[(city_df['city_id'] == 5), 'us_state'] = "Florida"
 
 print(city_df)
 
+#renaming weather data columns to match the database schema
+df = df.rename(columns={'daily.time': 'weather_date',
+                        'daily.temperature_2m_mean': 'temp_mean_f',
+                        'daily.temperature_2m_max': 'temp_max_f', 
+                        'daily.temperature_2m_min': 'temp_min_f',
+                        'daily.precipitation_sum': 'precipitation_sum_in',
+                        'daily.precipitation_hours': 'precipitation_hours',
+                        'daily.wind_speed_10m_max': 'wind_speed_max_mph'})
 
 #Next creating my subset of data for weather data. 
-#weather_df = df[["city_id",]].drop_duplicates()
+weather_df = df[["city_id", "weather_date", "temp_mean_f", "temp_max_f", "temp_min_f", "precipitation_sum_in", "precipitation_hours", "wind_speed_max_mph"]]
 
-# Replace strings
-#df = df.replace(['N/A, 'null', 'None', ''], sting_to_put)
+#exploding lists to turn into tabular data
+weather_df = weather_df.explode(['weather_date', 'temp_mean_f','temp_max_f', 'temp_min_f','precipitation_sum_in', 'precipitation_hours', 'wind_speed_max_mph'], ignore_index=True)
 
-#drop unecessary columns after creating subset of city data
-#df = df.drop(columns=columns_to_remove, errors='ignore')
+#preview
+print(weather_df.head())
 
-""" file_path_normalized = Path.cwd() / "data" / "normalized_weather.json"
+
+#check data for inconsistencies and missing values after exploding lists
+
+#max greater than min check
+max_greater_than_min = (weather_df['temp_max_f'] < weather_df['temp_min_f']).any()
+if max_greater_than_min: #if at least one row has max less than min, print a warning
+    print("Warning: There are rows where temp_max_f is less than temp_min_f.")
+    weather_df.loc[weather_df['temp_max_f'] < weather_df['temp_min_f'], 'temp_max_f'] = None
+    weather_df.loc[weather_df['temp_min_f'] > weather_df['temp_max_f'], 'temp_min_f'] = None
+    weather_df['temp_min_f','temp_max_f'] = weather_df.groupby('city_id')['temp_min_f','temp_max_f'].ffill()
+
+# check impossible placeholder temperatures
+weather_temp_error_max = (weather_df['temp_max_f'] > 140).any()
+if weather_temp_error_max:
+    print("Warning: There are rows where temp_max_f is greater than 140°F, which is an impossible value.")
+    weather_df.loc[weather_df['temp_max_f'] > 140, 'temp_max_f'] = None
+    weather_df['temp_max_f'] = weather_df.groupby('city_id')['temp_max_f'].ffill()
+
+weather_temp_error_min = (weather_df['temp_min_f'] < -130).any()
+if weather_temp_error_min:
+    print("Warning: There are rows where temp_min_f is less than -130°F, which is an impossible value.")
+    weather_df.loc[weather_df['temp_min_f'] < -130, 'temp_min_f'] = None
+    weather_df['temp_min_f'] = weather_df.groupby('city_id')['temp_min_f'].ffill()
+
+
+
+#ensuring there are only unique rows for each city_id and weather_date combination after exploding lists
+duplicate_count = weather_df.duplicated(subset=['city_id', 'weather_date']).sum()
+print(f"Total duplicate rows after normalization/transformation: {duplicate_count}")
+
+#recheck missing columns after exploding lists
+missing_total_normalized = weather_df.isnull().sum().sum()
+print(f"Total missing values after normalization/transformation: {missing_total_normalized}")
+
+""" 
+#for testing purposes, saving the normalized data to a JSON file
+file_path_normalized = Path.cwd() / "data" / "normalized_weather.json"
 weather_df.to_json(file_path_normalized, orient="records", indent=4) """
 
    
