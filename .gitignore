@@ -54,3 +54,4 @@ venv.bak/
 
 
  .vscode/settings.json
+ .vscode*
