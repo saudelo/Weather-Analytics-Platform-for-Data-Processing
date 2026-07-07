@@ -140,6 +140,3 @@ file_path_normalized = Path.cwd() / "data" / "normalized_weather.json"
 weather_df.to_json(file_path_normalized, orient="records", indent=4) """
 
    
-
-
-
