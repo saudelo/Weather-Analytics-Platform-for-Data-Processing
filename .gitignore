@@ -51,3 +51,6 @@ venv.bak/
 
 # Ruff stuff:
 .ruff_cache/
+
+
+ .vscode/settings.json

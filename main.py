@@ -1,30 +1,35 @@
 #script to orchestrate pipeline
 #import dependencies
+# from dao.city_dao import create_city_table
+# from dao.weather_dao import create_weather_table
 from db_util.db_util import get_conn_string
 from datetime import datetime
 from pathlib import Path
 import psycopg
 
-#ingest data
 
-#call transformation script
-
-#create a connection to the database
 def main():
+
+    #ingest data
+
+    #call transformation script
+
+    #create a connection to the database
+
     with psycopg.connect(get_conn_string()) as conn:
         intialize_db(conn)
 
 
+    #and load the data into the database
 
-
+    #call sql queries on data
 
 
 #helper function
 def intialize_db(conn):
     """Initialize the database"""
     
-    """     script_dir = os.path.dirname(os.path.abspath(__file__))
-    ddl_path = os.path.join(script_dir, "ddl.sql") """
+    ddl_path = Path.cwd() / "sql" / "weather_analytics_schema.sql"
     try:
         with conn.transaction():
             with open(ddl_path,"r") as file:
@@ -37,8 +42,6 @@ def intialize_db(conn):
         print(f"Database Setup Failed - Exception thrown: {e}")
 
 
-#and load the data into the database
-
-
-#call sql queries on data
+if __name__ == "__main__":
+    main()
 

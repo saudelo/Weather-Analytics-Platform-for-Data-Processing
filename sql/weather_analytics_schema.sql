@@ -1,3 +1,6 @@
+--dropping the schema if it exists so i can rerun the script without errors
+DROP SCHEMA IF EXISTS weather_analytics CASCADE;
+
 CREATE SCHEMA weather_analytics;
 
 CREATE TABLE weather_analytics.city (
