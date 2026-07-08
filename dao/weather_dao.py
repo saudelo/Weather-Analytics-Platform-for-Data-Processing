@@ -45,6 +45,15 @@ class WeatherDAO:
                 precipitation_hours=row["precipitation_hours"],
                 wind_speed_max_mph=row["wind_speed_max_mph"]
             )
-    def create(weather_df):
-             pass
+    def create(self,weather_df):
+        data_to_insert = list(weather_df.itertuples(index=False, name=None))
+        with self._conn.transaction():
+              with self._conn.cursor() as cur:
+                    cur.execute(
+                          "TRUNCATE TABLE weather_analytics.weather CASCADE"
+                    )
+                    cur.executemany(
+                        "INSERT INTO weather_analytics.weather (city_id,weather_date,temp_mean_f,temp_max_f,temp_min_f,precipitation_sum_in,precipitation_hours,wind_speed_max_mph) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
+                        data_to_insert)
+                    return cur.rowcount
 

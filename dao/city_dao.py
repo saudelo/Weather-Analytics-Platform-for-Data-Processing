@@ -39,9 +39,9 @@ class CityDAO:
         with self._conn.transaction():
               with self._conn.cursor() as cur:
                     cur.execute(
-                          "TRUNCATE TABLE weather_analytics.city"
+                          "TRUNCATE TABLE weather_analytics.city CASCADE"
                     )
                     cur.executemany(
-                        "INSERT INTO weather_analytics.city (city_id,city_name,longitude,latitude,us_state) VALUES (%s, %s, %s, %s, %s)", 
+                        "INSERT INTO weather_analytics.city (city_id,city,longitude,latitude,us_state) VALUES (%s, %s, %s, %s, %s)", 
                         data_to_insert)
                     return cur.rowcount

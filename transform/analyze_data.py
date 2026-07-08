@@ -80,7 +80,7 @@ def analyze_data():
 
     city_df.loc[(city_df['city_id'] == 5), 'city'] = "Miami"
     city_df.loc[(city_df['city_id'] == 5), 'us_state'] = "Florida"
-
+    city_df = city_df[["city_id","city","longitude","latitude","us_state"]]
     print(city_df)
 
     #renaming weather data columns to match the database schema

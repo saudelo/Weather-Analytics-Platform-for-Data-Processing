@@ -16,7 +16,7 @@ def main():
     #ingest data
 
     #call transformation script
-    city_df,weather_df = analyze_data
+    city_df,weather_df = analyze_data()
 
     #create a connection to the database
     with psycopg.connect(get_conn_string()) as conn:
@@ -24,6 +24,7 @@ def main():
         city_dao = CityDAO(conn)
         weather_dao = WeatherDAO(conn)
 
+        #load the data into the database
         city_row_count = city_dao.create(city_df)
         if city_row_count > 4:
             print(f"Successfully inserted {city_row_count} rows into the database.")
@@ -37,12 +38,11 @@ def main():
             print(f"Error inserting rows into weather table. Row count is {weather_row_count}")
 
 
+         #call sql queries on data
 
+    
 
-
-    #and load the data into the database
-
-    #call sql queries on data
+   
 
 
 #helper function

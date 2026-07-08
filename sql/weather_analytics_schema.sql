@@ -12,7 +12,7 @@ CREATE TABLE weather_analytics.city (
     --will clean state using pandas and fill in values if necessary
 );
 
-CREATE TABLE weather_analytics.weather_data (
+CREATE TABLE weather_analytics.weather (
     weather_id SERIAL PRIMARY KEY,
     city_id INT NOT NULL REFERENCES weather_analytics.city (city_id),
     weather_date DATE NOT NULL,
