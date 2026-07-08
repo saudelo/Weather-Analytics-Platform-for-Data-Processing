@@ -7,17 +7,37 @@ from datetime import datetime
 from pathlib import Path
 import psycopg
 
+from transform.analyze_data import analyze_data
+from dao.weather_dao import WeatherDAO
+from dao.city_dao import CityDAO
 
 def main():
 
     #ingest data
 
     #call transformation script
+    city_df,weather_df = analyze_data
 
     #create a connection to the database
-
     with psycopg.connect(get_conn_string()) as conn:
         intialize_db(conn)
+        city_dao = CityDAO(conn)
+        weather_dao = WeatherDAO(conn)
+
+        city_row_count = city_dao.create(city_df)
+        if city_row_count > 4:
+            print(f"Successfully inserted {city_row_count} rows into the database.")
+        else:
+            print(f"Error inserting rows into city table. Row count is {city_row_count}")
+        
+        weather_row_count = weather_dao.create(weather_df)
+        if weather_row_count > 50:
+            print(f"Successfully inserted {weather_row_count} into the database.")
+        else:
+            print(f"Error inserting rows into weather table. Row count is {weather_row_count}")
+
+
+
 
 
     #and load the data into the database
@@ -37,7 +57,9 @@ def intialize_db(conn):
                 with conn.cursor() as cur:
                     cur.execute(sql)
                     print("Setup successful")
-                              
+    
+    except FileNotFoundError:
+        print(f"Database Setup Failed - File not found: {ddl_path}")                          
     except psycopg.Error as e:
         print(f"Database Setup Failed - Exception thrown: {e}")
 
