@@ -11,8 +11,14 @@ from transform.analyze_data import analyze_data
 from dao.weather_dao import WeatherDAO
 from dao.city_dao import CityDAO
 CITY = "City"
-WEATHER = "Weather"
+WEATHER = "Temperature in F"
+PRECIP_SUM = "Inches of Precipitation"
+MONTH = "Month"
+PRECIP_HOURS = "Hours of Precipitation"
+WEEK = "Week"
+WIND_SPEED = "Avg Wind Speed"
 def main():
+
 
     #ingest data
 
@@ -57,9 +63,40 @@ def main():
 
         for record in response_list2:
             print(f"{record.city_name:<10} {record.weather:<10}")
+
+        #Query 3
+        response_list3 = weather_dao.total_monthly_precipitation_per_city()  #returning list of dataclass for type safety
+        print("\nTotal Monthly Inches of Precipitation By City:\n")
+        print(f"{MONTH:<10}{CITY:<10}{PRECIP_SUM:<10}")
+        print("-----------------------------------------------------")
+
+        for record in response_list3:
+            print(f"{record.weather_date.month:<10}{record.city_name:<10} {f'{record.precip:^15.2f}':>20}")
         
 
+        #Query 4
+        response_list4 = weather_dao.total_hourly_precipitation_per_city()  #returning list of dataclass for type safety
+        print("\nTotal Monthly Hours of Precipitation By City:\n")
+        print(f"{MONTH:<10}{CITY:<10}{PRECIP_HOURS:<10}")
+        print("-----------------------------------------------------")
 
+        for record in response_list4:
+            print(f"{record.weather_date.month:<10}{record.city_name:<10} {f'{record.precip:^15.1f}':>20}")
+        
+
+        #Query 5
+        # city_name: str
+        # windiest_week: date
+        # wind_speed: float
+
+        response_list5 = weather_dao.windiest_week_per_city()  #returning list of dataclass for type safety
+        print("\nWindiest Week of the Year By City:\n")
+        #Took the average Max wind speed throughout the week and then took the max per city
+        print(f"{CITY:<10}{WEEK:<10}{WIND_SPEED:<10}")
+        print("-----------------------------------------------------")
+
+        for record in response_list5:
+            print(f"{record.city_name:<10}{record.windiest_week.isoformat:<10} {f'{record.wind_speed:^15.2f}':>20}")
     
 
    

@@ -20,6 +20,19 @@ class WeatherResponse:
     city_name: str
     weather: float
 
+@dataclass
+class PrecipResponse:
+    weather_date: date
+    city_name: str
+    precip: float
+
+@dataclass
+class WindResponse:
+    city_name: str
+    windiest_week: date
+    wind_speed: float
+
+
 ## =============================================================================
 # DAO CLASS
 # -`bulk_create(city_id, weather_date, temp_mean_f,temp_max_f,temp_min_f,precipitation_sum_in,precipitation_hours,wind_speed_max_mph)— insert records into weather table in bulk
@@ -86,7 +99,7 @@ class WeatherDAO:
                     return response
     
     def lowest_temp_per_city(self):
-          with self._conn.transaction():
+        with self._conn.transaction():
             with self._conn.cursor() as cur:
                 
                 cur.execute(
@@ -110,11 +123,94 @@ class WeatherDAO:
     
     
     def total_monthly_precipitation_per_city(self):
-          pass
+        with self._conn.transaction():
+            with self._conn.cursor() as cur:
+                
+                cur.execute(
+                    """
+                    SELECT
+                    DATE_TRUNC('month',w.weather_date) weather_month,
+                    c.city,
+                    SUM(w.precipitation_sum_in)
+                    FROM weather_analytics.weather w
+          	        INNER JOIN weather_analytics.city c
+                         	ON c.city_id = w.city_id
+                    GROUP BY weather_month,c.city
+                    ORDER BY c.city ASC ,weather_month ASC;
+
+                    """
+                        
+                )
+                rows = cur.fetchall()
+
+                if not rows:
+                    print("No records found.")
+                    return None
+                else:
+                    response = [PrecipResponse(*row) for row in rows]
+                    return response
     
-    def total_hours_precipitation_per_city(self):
-          pass
+    
+    def total_hourly_precipitation_per_city(self):
+        with self._conn.transaction():
+            with self._conn.cursor() as cur:
+                
+                cur.execute(
+                    """
+                    SELECT
+                    DATE_TRUNC('month',w.weather_date) weather_month,
+                    c.city,
+                    SUM(w.precipitation_hours)
+                    FROM weather_analytics.weather w
+          	        INNER JOIN weather_analytics.city c
+                         	ON c.city_id = w.city_id
+                    GROUP BY weather_month,c.city
+                    ORDER BY c.city ASC ,weather_month ASC;
+
+                    """
+                        
+                )
+                rows = cur.fetchall()
+
+                if not rows:
+                    print("No records found.")
+                    return None
+                else:
+                    response = [PrecipResponse(*row) for row in rows]
+                    return response
+    
     
     def windiest_week_per_city(self):
-          pass
+        with self._conn.transaction():
+            with self._conn.cursor() as cur:
+                
+                cur.execute(
+                    """
+                    SELECT DISTINCT ON (city)
+                    city,
+                    weather_week,
+                    avg_speed
+                    FROM (
+                        SELECT
+                        c.city,
+                        DATE_TRUNC('week',w.weather_date)::date weather_week,
+                        AVG(w.wind_speed_max_mph) avg_speed
+                        FROM weather_analytics.weather w
+                                    INNER JOIN weather_analytics.city c
+                                                    ON c.city_id = w.city_id
+                        GROUP BY c.city, weather_week
+                    ) weekly_avg
+                    ORDER BY city, avg_speed DESC
+                    """
+
+                )
+                rows = cur.fetchall()
+
+                if not rows:
+                    print("No records found.")
+                    return None
+                else:
+                    response = [WindResponse(*row) for row in rows]
+                    return response
+    
     
