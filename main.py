@@ -39,15 +39,26 @@ def main():
             print(f"Error inserting rows into weather table. Row count is {weather_row_count}")
 
 
-         #call sql queries on data
-        response_rows = weather_dao.highest_temp_per_city()
-        print("Max Weather per City:")
-        print()
+        #call sql queries on data
+        #Query 1
+        response_list = weather_dao.highest_temp_per_city()  #returning list of dataclass for type safety
+        print("\nMax Weather per City:\n")
         print(f"{CITY:<10}{WEATHER:<10}")
         print("-----------------------")
 
-        for record in response_rows:
-            print(f"{record[0]:<10} {record[1]:<10}")
+        for record in response_list:
+            print(f"{record.city_name:<10} {record.weather:<10}")
+
+        #Query 2
+        response_list2 = weather_dao.lowest_temp_per_city()  #returning list of dataclass for type safety
+        print("\nMin Weather per City:\n")
+        print(f"{CITY:<10}{WEATHER:<10}")
+        print("-----------------------")
+
+        for record in response_list2:
+            print(f"{record.city_name:<10} {record.weather:<10}")
+        
+
 
     
 

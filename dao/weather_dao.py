@@ -16,9 +16,9 @@ class WeatherRecord:
     wind_speed_max_mph: float
 
 @dataclass
-class MaxWeatherResponse:
-     city_name: str
-     temp_max_f: float
+class WeatherResponse:
+    city_name: str
+    weather: float
 
 ## =============================================================================
 # DAO CLASS
@@ -77,17 +77,37 @@ class WeatherDAO:
                 )
                 rows = cur.fetchall()
                 
-                #response = []
 
                 if not rows:
                     print("No records found.")
                     return None
                 else:
-                    
-                    return rows
+                    response = [WeatherResponse(*row) for row in rows]
+                    return response
     
     def lowest_temp_per_city(self):
-          pass
+          with self._conn.transaction():
+            with self._conn.cursor() as cur:
+                
+                cur.execute(
+                    """SELECT c.city,
+                    MIN(w.temp_min_f)
+                            FROM weather_analytics.weather w
+          	            INNER JOIN weather_analytics.city c
+                         	ON c.city_id = w.city_id
+          	            GROUP BY c.city"""
+                        
+                )
+                rows = cur.fetchall()
+                
+
+                if not rows:
+                    print("No records found.")
+                    return None
+                else:
+                    response = [WeatherResponse(*row) for row in rows]
+                    return response
+    
     
     def total_monthly_precipitation_per_city(self):
           pass
