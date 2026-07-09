@@ -10,7 +10,8 @@ import psycopg
 from transform.analyze_data import analyze_data
 from dao.weather_dao import WeatherDAO
 from dao.city_dao import CityDAO
-
+CITY = "City"
+WEATHER = "Weather"
 def main():
 
     #ingest data
@@ -39,6 +40,14 @@ def main():
 
 
          #call sql queries on data
+        response_rows = weather_dao.highest_temp_per_city()
+        print("Max Weather per City:")
+        print()
+        print(f"{CITY:<10}{WEATHER:<10}")
+        print("-----------------------")
+
+        for record in response_rows:
+            print(f"{record[0]:<10} {record[1]:<10}")
 
     
 

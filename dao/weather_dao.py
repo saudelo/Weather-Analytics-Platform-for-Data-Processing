@@ -15,7 +15,10 @@ class WeatherRecord:
     precipitation_hours: float
     wind_speed_max_mph: float
 
-
+@dataclass
+class MaxWeatherResponse:
+     city_name: str
+     temp_max_f: float
 
 ## =============================================================================
 # DAO CLASS
@@ -45,6 +48,8 @@ class WeatherDAO:
                 precipitation_hours=row["precipitation_hours"],
                 wind_speed_max_mph=row["wind_speed_max_mph"]
             )
+    
+
     def create(self,weather_df):
         data_to_insert = list(weather_df.itertuples(index=False, name=None))
         with self._conn.transaction():
@@ -57,3 +62,39 @@ class WeatherDAO:
                         data_to_insert)
                     return cur.rowcount
 
+    def  highest_temp_per_city(self):
+        with self._conn.transaction():
+            with self._conn.cursor() as cur:
+                
+                cur.execute(
+                    """SELECT c.city,
+                    MAX(w.temp_max_f)
+                            FROM weather_analytics.weather w
+          	            INNER JOIN weather_analytics.city c
+                         	ON c.city_id = w.city_id
+          	            GROUP BY c.city"""
+                        
+                )
+                rows = cur.fetchall()
+                
+                #response = []
+
+                if not rows:
+                    print("No records found.")
+                    return None
+                else:
+                    
+                    return rows
+    
+    def lowest_temp_per_city(self):
+          pass
+    
+    def total_monthly_precipitation_per_city(self):
+          pass
+    
+    def total_hours_precipitation_per_city(self):
+          pass
+    
+    def windiest_week_per_city(self):
+          pass
+    
