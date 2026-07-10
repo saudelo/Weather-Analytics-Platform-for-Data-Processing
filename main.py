@@ -98,7 +98,7 @@ def main():
         print("-----------------------------------------------------")
 
         for record in response_list5:
-            print(f"{record.city_name:<10}{record.windiest_week.isoformat:<10} {f'{record.wind_speed:^15.2f}':>20}")
+            print(f"{record.city_name:<10}{record.windiest_week.isoformat():<10} {f'{record.wind_speed:^15.2f}':>20}")
     
 
    
