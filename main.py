@@ -8,6 +8,7 @@ from pathlib import Path
 import psycopg
 
 from transform.analyze_data import analyze_data
+from ingestion.fetch_data import get_data
 from dao.weather_dao import WeatherDAO
 from dao.city_dao import CityDAO
 CITY = "City"
@@ -20,7 +21,8 @@ WIND_SPEED = "Avg Wind Speed"
 def main():
 
 
-    #ingest data
+    #ingest data and save to raw JSON file
+    get_data()
 
     #call transformation script
     city_df,weather_df = analyze_data()

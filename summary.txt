@@ -1,0 +1,39 @@
+Weather Analytics Platform - Data Summary
+===========================================
+
+For this project, I pulled a full year of daily weather data (January 1,
+2024 through December 31, 2024) for five U.S. cities: Phoenix, AZ; Seattle,
+WA; Chicago, IL; Juneau, AK; and Miami, FL. I picked these five on purpose
+because they represent very different climates - desert, Pacific Northwest,
+Midwest continental, subarctic coastal, and tropical. This was done so that the analysis
+would have some real variation to work with instead of five cities that
+all look the same. The data itself comes from the Open-Meteo historical
+archive API, and for each city I pulled daily mean/max/min temperature,
+precipitation totals, precipitation hours, and max wind speed.
+
+Data quality issues encountered:
+I didn't run into any actual data quality issues with this dataset - no
+missing values, no duplicate records, and no obviously broken readings once
+everything was pulled and normalized. That said, I didn't want to just
+assume the data would always be this clean, so I built error handling and
+automatic cleaning into the data analysis step so the pipeline can catch
+and correct problems if they ever show up in a future pull. Specifically,
+the transformation script checks for null/missing values and duplicate
+rows both before and after the data is exploded into a daily/tabular
+format. It also checks for logical inconsistencies, like a day's max
+temperature being lower than its min temperature, and for impossible
+placeholder values (for example, a max temp above 140°F or a min temp
+below -130°F), which is the kind of thing that shows up when an API
+returns a sentinel/error value instead of an actual reading.
+
+How those issues would be resolved:
+Since none of these conditions actually triggered on this run, nothing
+needed to be fixed this time around. But the logic is already in place:
+if any of those checks come back positive, the script flags it with a
+warning message, nulls out the bad value, and then forward-fills it using
+the most recent valid reading for that same city, so a single bad data
+point doesn't break downstream calculations or get silently averaged in.
+The idea is that the pipeline is defensive by default - if the API ever
+sends back a gap, a duplicate, or a nonsensical value, the platform will
+catch it and self-correct rather than loading bad data straight into the
+database.
