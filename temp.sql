@@ -1,0 +1,1 @@
+DROP SCHEMA IF EXISTS weather_analytics CASCADE;

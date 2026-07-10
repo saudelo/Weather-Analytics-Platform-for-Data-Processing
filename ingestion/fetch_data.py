@@ -4,7 +4,6 @@ import json
 import time
 import requests
 from pathlib import Path
-import os
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import sys
@@ -64,21 +63,22 @@ def get_data():
         print(f"Request failed after max 3 retries: {e}")
     except requests.exceptions.Timeout as e:
         print(f"Request timed out: {e}")
-    except requests.exceptions.RequestException as e:
-        print(f"Other request error: {e}")
     except requests.exceptions.HTTPError as e:  #returns 400 if url not specified correctly
         if e.response.status_code == 400:
-            print(f"HTTP error 400: Bad Request. Please check the URL. Error: {e}")   
+            print(f"HTTP error 400: Bad Request. Please check the URL. Error: {e}")
         elif e.response.status_code == 429:
-            print(f"HTTP error 429: Too Many Requests. Rate limit exceeded. Error: {e}")    
+            print(f"HTTP error 429: Too Many Requests. Rate limit exceeded. Error: {e}")
         else:
             print(f"HTTP error: {e}")
+    except requests.exceptions.RequestException as e:
+        print(f"Other request error: {e}")
 
 
 def handle_rate_limit(response,*args, **kwargs):
     
     if response.status_code == 429:
         retry_val = response.headers.get("Retry-After")
+        retry_val = int(retry_val) if retry_val else None
         if retry_val and retry_val == 60:
             print("Rate limit exceeded. Waiting 60 seconds before retrying...")
             time.sleep(retry_val)
