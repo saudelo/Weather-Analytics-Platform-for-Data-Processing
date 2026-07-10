@@ -1,7 +1,7 @@
 [{
     "latitude": 33.427063,
     "longitude": -112.02719,
-    "generationtime_ms": 22.749662399291992,
+    "generationtime_ms": 124.8248815536499,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -2596,7 +2596,7 @@
 },{
     "latitude": 47.627415,
     "longitude": -122.32291,
-    "generationtime_ms": 22.12393283843994,
+    "generationtime_ms": 79.90539073944092,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -5191,7 +5191,7 @@
 },{
     "latitude": 41.862915,
     "longitude": -87.64877,
-    "generationtime_ms": 6.320953369140625,
+    "generationtime_ms": 75.08039474487305,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -7786,7 +7786,7 @@
 },{
     "latitude": 58.24253,
     "longitude": -134.40788,
-    "generationtime_ms": 2323.9411115646362,
+    "generationtime_ms": 166.44179821014404,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -10381,7 +10381,7 @@
 },{
     "latitude": 25.764498,
     "longitude": -80.196075,
-    "generationtime_ms": 5.157709121704102,
+    "generationtime_ms": 1344.4032669067383,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
